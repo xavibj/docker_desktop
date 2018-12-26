@@ -1,1 +1,24 @@
-#test 2
+pipeline {
+   agent any
+   stages{
+      stage('checkout'){
+         steps{
+            checkout scm
+         }
+      }
+      stage('Build image') {
+            steps {
+                echo 'Starting to build docker image ... !'
+
+                script {
+                    withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                       def customImage = docker.build("xavibj/atom:${env.BUILD_ID}")
+                       def latest = docker.build("xavibj/atom:latest")
+                       customImage.push()
+                       latest.push()
+                    }
+                }
+            }
+       }
+   }
+}
