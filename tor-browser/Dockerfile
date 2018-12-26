@@ -7,6 +7,8 @@
 #	-e DISPLAY=unix$DISPLAY \
 #	xavibj/tor-browser
 #
+#
+
 FROM debian:buster-slim
 LABEL maintainer "Xavi Bolivar <xavi@xavi.net>"
 
@@ -56,7 +58,7 @@ RUN cd /tmp \
 	&& chown -R user:user /usr/local/bin
 
 # good fonts
-COPY local.conf /etc/fonts/local.conf
+COPY tor-browser/local.conf /etc/fonts/local.conf
 
 WORKDIR $HOME
 USER user
