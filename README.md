@@ -1,4 +1,9 @@
 # Docker Desktop
 Based on Jess Frazelle repos: https://github.com/jessfraz/dockerfiles
 
-test 2
+* Atom
+* Tor-browser
+
+Good luck.
+
+Xavi.
