@@ -12,8 +12,8 @@ pipeline {
 
                 script {
                     withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                       def customImage = docker.build("xavibj/atom:${env.BUILD_ID}")
-                       def latest = docker.build("xavibj/atom:latest")
+                       def customImage = docker.build("xavibj/atom:${env.BUILD_ID}","-f atom/Dockerfile .")
+                       def latest = docker.build("xavibj/atom:latest","-f atom/Dockerfile .")
                        customImage.push()
                        latest.push()
                     }
