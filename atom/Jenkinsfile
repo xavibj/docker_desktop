@@ -7,6 +7,9 @@ pipeline {
          }
       }
       stage('Build image') {
+            when {
+                changeset "atom/*"
+            }
             steps {
                 echo 'Building atom image, please wait ...'
 
