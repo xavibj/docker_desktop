@@ -8,7 +8,7 @@ pipeline {
       }
       stage('Build image') {
             steps {
-                echo 'Starting to build docker image ... !'
+                echo 'Building atom image, please wait ...'
 
                 script {
                     withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
