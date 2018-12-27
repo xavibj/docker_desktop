@@ -1,0 +1,62 @@
+#!/bin/bash
+# Bash wrappers for docker run commands
+
+export DOCKER_REPO_PREFIX=xavibj
+
+#
+# Helper Functions
+#
+dcleanup(){
+	local containers
+	mapfile -t containers < <(docker ps -aq 2>/dev/null)
+	docker rm "${containers[@]}" 2>/dev/null
+	local volumes
+	mapfile -t volumes < <(docker ps --filter status=exited -q 2>/dev/null)
+	docker rm -v "${volumes[@]}" 2>/dev/null
+	local images
+	mapfile -t images < <(docker images --filter dangling=true -q 2>/dev/null)
+	docker rmi "${images[@]}" 2>/dev/null
+}
+del_stopped(){
+	local name=$1
+	local state
+	state=$(docker inspect --format "{{.State.Running}}" "$name" 2>/dev/null)
+
+	if [[ "$state" == "false" ]]; then
+		docker rm "$name"
+	fi
+}
+rmctr(){
+	# shellcheck disable=SC2068
+	docker rm -f $@ 2>/dev/null || true
+}
+relies_on(){
+	for container in "$@"; do
+		local state
+		state=$(docker inspect --format "{{.State.Running}}" "$container" 2>/dev/null)
+
+		if [[ "$state" == "false" ]] || [[ "$state" == "" ]]; then
+			echo "$container is not running, starting it for you."
+			$container
+		fi
+	done
+}
+
+atom(){
+	del_stopped atom
+
+	docker run -d \
+		-v "$HOME:/root" \
+		-e DISPLAY=host.docker.internal:0 \
+		--name atom \
+		${DOCKER_REPO_PREFIX}/atom
+}
+
+torbrowser(){
+        del_stopped torbrowser
+
+        docker run -d \
+                -e "DISPLAY=host.docker.internal:0" \
+                --name torbrowser \
+                ${DOCKER_REPO_PREFIX}/tor-browser
+}
